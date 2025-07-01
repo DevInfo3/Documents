@@ -1,0 +1,198 @@
+Here’s a complete guide to unit testing in C# using NUnit, tailored for real-world applications, including setup, structure, best practices, and examples.
+________________________________________
+✅ What is Unit Testing?
+Unit testing is a software testing technique where individual units of code (methods) are tested in isolation to ensure they behave as expected.
+________________________________________
+🔧 Tools & Frameworks
+•	NUnit: Popular testing framework for .NET
+•	Moq: For mocking dependencies
+•	FluentAssertions (optional): For cleaner assertion syntax
+•	Test Runner: Built-in in Visual Studio or dotnet test CLI
+________________________________________
+📦 1. Setup NUnit in Your Project
+✳️ Add NUnit to your test project
+If you don't have a test project:
+bash
+CopyEdit
+dotnet new nunit -n YourApp.Tests
+If already created:
+bash
+CopyEdit
+dotnet add package NUnit
+dotnet add package NUnit3TestAdapter
+dotnet add package Microsoft.NET.Test.Sdk
+Optional (for mocking):
+bash
+CopyEdit
+dotnet add package Moq
+________________________________________
+🧱 2. Basic NUnit Test Structure
+csharp
+CopyEdit
+using NUnit.Framework;
+
+namespace YourApp.Tests
+{
+    [TestFixture]
+    public class CalculatorTests
+    {
+        [Test]
+        public void Add_TwoNumbers_ReturnsSum()
+        {
+            var calculator = new Calculator();
+
+            var result = calculator.Add(2, 3);
+
+            Assert.AreEqual(5, result);
+        }
+    }
+}
+________________________________________
+🧪 3. NUnit Attributes
+Attribute	Purpose
+[Test]	Marks a test method
+[SetUp]	Runs before each test
+[TearDown]	Runs after each test
+[TestFixture]	Declares a test class
+[TestCase]	Parameterized test data
+[Ignore]	Skips a test
+[Category("x")]	Groups test cases
+✅ Example with [SetUp] and [TestCase]
+csharp
+CopyEdit
+[TestFixture]
+public class MathServiceTests
+{
+    private MathService _service;
+
+    [SetUp]
+    public void Setup()
+    {
+        _service = new MathService();
+    }
+
+    [TestCase(2, 3, 5)]
+    [TestCase(0, 0, 0)]
+    public void Add_ValidInputs_ReturnsCorrectSum(int a, int b, int expected)
+    {
+        var result = _service.Add(a, b);
+        Assert.AreEqual(expected, result);
+    }
+}
+________________________________________
+🔄 4. Mocking with Moq
+csharp
+CopyEdit
+public interface INotifier
+{
+    void Send(string message);
+}
+
+public class EmployeeService
+{
+    private readonly INotifier _notifier;
+
+    public EmployeeService(INotifier notifier)
+    {
+        _notifier = notifier;
+    }
+
+    public void Save(string name)
+    {
+        // Save logic...
+        _notifier.Send($"Saved {name}");
+    }
+}
+✅ Unit Test with Moq
+csharp
+CopyEdit
+[Test]
+public void Save_ShouldSendNotification()
+{
+    var mockNotifier = new Mock<INotifier>();
+    var service = new EmployeeService(mockNotifier.Object);
+
+    service.Save("Parikshit");
+
+    mockNotifier.Verify(n => n.Send("Saved Parikshit"), Times.Once);
+}
+________________________________________
+🧠 5. Best Practices
+•	Test one method/logic per test
+•	Name tests like: MethodName_Condition_ExpectedResult
+•	Avoid testing private methods directly (test via public interface)
+•	Use mocks to isolate dependencies
+•	Don't rely on DB/real services in unit tests
+________________________________________
+🧪 6. Running Tests
+•	In Visual Studio: Test Explorer → Run All
+•	Using CLI:
+bash
+CopyEdit
+dotnet test
+________________________________________
+📁 7. Typical Folder Structure
+markdown
+CopyEdit
+YourApp/
+  Services/
+    EmployeeService.cs
+YourApp.Tests/
+  Services/
+    EmployeeServiceTests.cs
+________________________________________
+📌 8. Asserting with FluentAssertions (optional but clean)
+bash
+CopyEdit
+dotnet add package FluentAssertions
+csharp
+CopyEdit
+result.Should().Be(5);
+________________________________________
+📘 9. Common Assertions
+csharp
+CopyEdit
+Assert.AreEqual(expected, actual);
+Assert.IsTrue(condition);
+Assert.IsNull(obj);
+Assert.Throws<Exception>(() => method());
+________________________________________
+📎 10. Example: Real-World Service Test
+csharp
+CopyEdit
+public class OrderService
+{
+    private readonly IEmailService _emailService;
+
+    public OrderService(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+
+    public bool PlaceOrder(string product)
+    {
+        // Logic to save order
+        _emailService.SendConfirmation(product);
+        return true;
+    }
+}
+csharp
+CopyEdit
+[TestFixture]
+public class OrderServiceTests
+{
+    [Test]
+    public void PlaceOrder_SendsConfirmationEmail()
+    {
+        var mockEmail = new Mock<IEmailService>();
+        var service = new OrderService(mockEmail.Object);
+
+        var result = service.PlaceOrder("Laptop");
+
+        Assert.IsTrue(result);
+        mockEmail.Verify(e => e.SendConfirmation("Laptop"), Times.Once);
+    }
+}
+________________________________________
+Would you like a real-world test class for your EmployeeService or want to integrate with Entity Framework mocks too?
+
