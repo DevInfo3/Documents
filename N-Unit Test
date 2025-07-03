@@ -1,36 +1,32 @@
-Here’s a complete guide to unit testing in C# using NUnit, tailored for real-world applications, including setup, structure, best practices, and examples.
+https://chatgpt.com/share/686604ae-4308-8009-8d11-d78261102912
+
 ________________________________________
 ✅ What is Unit Testing?
 Unit testing is a software testing technique where individual units of code (methods) are tested in isolation to ensure they behave as expected.
 ________________________________________
 🔧 Tools & Frameworks
-•	NUnit: Popular testing framework for .NET
-•	Moq: For mocking dependencies
-•	FluentAssertions (optional): For cleaner assertion syntax
-•	Test Runner: Built-in in Visual Studio or dotnet test CLI
+    •	NUnit: Popular testing framework for .NET
+    •	Moq: For mocking dependencies
+    •	FluentAssertions (optional): For cleaner assertion syntax
+    •	Test Runner: Built-in in Visual Studio or dotnet test CLI
 ________________________________________
 📦 1. Setup NUnit in Your Project
 ✳️ Add NUnit to your test project
+
 If you don't have a test project:
-bash
-CopyEdit
 dotnet new nunit -n YourApp.Tests
+
 If already created:
-bash
-CopyEdit
 dotnet add package NUnit
 dotnet add package NUnit3TestAdapter
 dotnet add package Microsoft.NET.Test.Sdk
+
 Optional (for mocking):
-bash
-CopyEdit
 dotnet add package Moq
 ________________________________________
 🧱 2. Basic NUnit Test Structure
-csharp
-CopyEdit
-using NUnit.Framework;
 
+using NUnit.Framework;
 namespace YourApp.Tests
 {
     [TestFixture]
@@ -48,18 +44,21 @@ namespace YourApp.Tests
     }
 }
 ________________________________________
+
 🧪 3. NUnit Attributes
-Attribute	Purpose
-[Test]	Marks a test method
-[SetUp]	Runs before each test
-[TearDown]	Runs after each test
-[TestFixture]	Declares a test class
-[TestCase]	Parameterized test data
-[Ignore]	Skips a test
-[Category("x")]	Groups test cases
+| Attribute         | Purpose                   |
+| ----------------- | ------------------------- |
+| `[Test]`          | Marks a test method       |
+| `[SetUp]`         | Runs **before** each test |
+| `[TearDown]`      | Runs **after** each test  |
+| `[TestFixture]`   | Declares a test class     |
+| `[TestCase]`      | Parameterized test data   |
+| `[Ignore]`        | Skips a test              |
+| `[Category("x")]` | Groups test cases         |
+
+
 ✅ Example with [SetUp] and [TestCase]
-csharp
-CopyEdit
+
 [TestFixture]
 public class MathServiceTests
 {
@@ -81,8 +80,6 @@ public class MathServiceTests
 }
 ________________________________________
 🔄 4. Mocking with Moq
-csharp
-CopyEdit
 public interface INotifier
 {
     void Send(string message);
@@ -104,8 +101,6 @@ public class EmployeeService
     }
 }
 ✅ Unit Test with Moq
-csharp
-CopyEdit
 [Test]
 public void Save_ShouldSendNotification()
 {
@@ -118,48 +113,36 @@ public void Save_ShouldSendNotification()
 }
 ________________________________________
 🧠 5. Best Practices
-•	Test one method/logic per test
-•	Name tests like: MethodName_Condition_ExpectedResult
-•	Avoid testing private methods directly (test via public interface)
-•	Use mocks to isolate dependencies
-•	Don't rely on DB/real services in unit tests
+    •	Test one method/logic per test
+    •	Name tests like: MethodName_Condition_ExpectedResult
+    •	Avoid testing private methods directly (test via public interface)
+    •	Use mocks to isolate dependencies
+    •	Don't rely on DB/real services in unit tests
 ________________________________________
 🧪 6. Running Tests
 •	In Visual Studio: Test Explorer → Run All
-•	Using CLI:
-bash
-CopyEdit
-dotnet test
+•	Using CLI:    
+    dotnet test
 ________________________________________
 📁 7. Typical Folder Structure
-markdown
-CopyEdit
-YourApp/
-  Services/
-    EmployeeService.cs
-YourApp.Tests/
-  Services/
-    EmployeeServiceTests.cs
-________________________________________
+    YourApp/
+      Services/
+        EmployeeService.cs
+    YourApp.Tests/
+      Services/
+        EmployeeServiceTests.cs
+    ________________________________________
 📌 8. Asserting with FluentAssertions (optional but clean)
-bash
-CopyEdit
-dotnet add package FluentAssertions
-csharp
-CopyEdit
-result.Should().Be(5);
+    dotnet add package FluentAssertions
+    result.Should().Be(5);
 ________________________________________
 📘 9. Common Assertions
-csharp
-CopyEdit
 Assert.AreEqual(expected, actual);
 Assert.IsTrue(condition);
 Assert.IsNull(obj);
 Assert.Throws<Exception>(() => method());
 ________________________________________
 📎 10. Example: Real-World Service Test
-csharp
-CopyEdit
 public class OrderService
 {
     private readonly IEmailService _emailService;
@@ -176,8 +159,7 @@ public class OrderService
         return true;
     }
 }
-csharp
-CopyEdit
+
 [TestFixture]
 public class OrderServiceTests
 {
